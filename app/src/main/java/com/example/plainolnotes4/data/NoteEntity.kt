@@ -1,5 +1,6 @@
 package com.example.plainolnotes4.data
 
+import com.example.plainolnotes4.NEW_NOTE_ID
 import java.util.*
 
 data class NoteEntity(
