@@ -1,5 +1,6 @@
 package com.example.plainolnotes4
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,14 +16,17 @@ class NotesListAdapter(private val notesList: List<NoteEntity>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        TODO("Not yet implemented")
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(R.layout.list_item, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val note = notesList[position]
+        with(holder.binding) {
+            noteText.text = note.text
+        }
     }
 
-    override fun getItemCount(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getItemCount() = notesList.size
 }
