@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,5 +10,21 @@
         android:id="@+id/mainFragment"
         android:name="com.example.plainolnotes4.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/main_fragment" />
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_edit_note"
+            app:destination="@id/editorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editorFragment"
+        android:name="com.example.plainolnotes4.EditorFragment"
+        android:label="editor_fragment"
+        tools:layout="@layout/editor_fragment">
+        <argument
+            android:name="noteId"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>

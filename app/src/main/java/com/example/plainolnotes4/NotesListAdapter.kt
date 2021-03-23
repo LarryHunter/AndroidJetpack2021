@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.plainolnotes4.data.NoteEntity
 import com.example.plainolnotes4.databinding.ListItemBinding
 
-class NotesListAdapter(private val notesList: List<NoteEntity>) :
+class NotesListAdapter(
+    private val notesList: List<NoteEntity>,
+    private val listener: ListItemListener
+) :
     RecyclerView.Adapter<NotesListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) :
@@ -25,8 +28,15 @@ class NotesListAdapter(private val notesList: List<NoteEntity>) :
         val note = notesList[position]
         with(holder.binding) {
             noteText.text = note.text
+            root.setOnClickListener {
+                listener.onItemClick(note.id)
+            }
         }
     }
 
     override fun getItemCount() = notesList.size
+
+    interface ListItemListener {
+        fun onItemClick(noteId: Int)
+    }
 }
