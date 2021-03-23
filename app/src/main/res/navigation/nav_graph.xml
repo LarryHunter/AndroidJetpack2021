@@ -20,6 +20,11 @@
         android:id="@+id/editorFragment"
         android:name="com.example.plainolnotes4.EditorFragment"
         android:label="editor_fragment"
-        tools:layout="@layout/editor_fragment" />
+        tools:layout="@layout/editor_fragment">
+        <argument
+            android:name="noteId"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 
 </navigation>
