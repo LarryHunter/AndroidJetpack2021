@@ -1,15 +1,25 @@
 package com.example.plainolnotes4
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.plainolnotes4.data.NoteEntity
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.plainolnotes4.data.AppDatabase
 import com.example.plainolnotes4.data.SampleDataProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class MainViewModel : ViewModel() {
+class MainViewModel(app: Application) : AndroidViewModel(app) {
 
-    val notesList = MutableLiveData<List<NoteEntity>>()
+    private val database = AppDatabase.getInstance(app)
+    val notesList = database?.noteDao()?.getAll()
 
-    init {
-        notesList.value = SampleDataProvider.getSampleNotes()
+    fun addSampleData() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val sampleNotes = SampleDataProvider.getSampleNotes()
+                database?.noteDao()?.insertAll(sampleNotes)
+            }
+        }
     }
 }
