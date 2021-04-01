@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.plainolnotes4.data.AppDatabase
+import com.example.plainolnotes4.data.NoteEntity
 import com.example.plainolnotes4.data.SampleDataProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +20,14 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) {
                 val sampleNotes = SampleDataProvider.getSampleNotes()
                 database?.noteDao()?.insertAll(sampleNotes)
+            }
+        }
+    }
+
+    fun deleteNotes(selectedNotes: List<NoteEntity>) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database?.noteDao()?.deleteNotes(selectedNotes)
             }
         }
     }
