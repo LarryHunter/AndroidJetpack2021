@@ -47,7 +47,14 @@ class MainFragment : Fragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
+        val menuId = if (this::adapter.isInitialized &&
+            adapter.selectedNotes.isNotEmpty()
+        ) {
+            R.menu.menu_main_selected_items
+        } else {
+            R.menu.menu_main
+        }
+        inflater.inflate(menuId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -67,5 +74,9 @@ class MainFragment : Fragment(),
         Log.i(TAG, "onItemClick: received noteId: $noteId")
         val action = MainFragmentDirections.actionEditNote(noteId)
         findNavController().navigate(action)
+    }
+
+    override fun onItemSelectionChanged() {
+        requireActivity().invalidateOptionsMenu()
     }
 }
