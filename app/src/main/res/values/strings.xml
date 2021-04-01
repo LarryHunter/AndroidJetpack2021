@@ -3,4 +3,7 @@
     <string name="notes">Notes</string>
     <string name="add_note">Add Note</string>
     <string name="enter_note">Enter note</string>
+    <string name="add_sample_data">Add sample data</string>
+    <string name="delete">Delete</string>
+    <string name="delete_all_data">Delete all data</string>
 </resources>
