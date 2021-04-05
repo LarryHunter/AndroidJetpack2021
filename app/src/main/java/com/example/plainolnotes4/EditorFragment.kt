@@ -56,7 +56,10 @@ class EditorFragment : Fragment() {
         )
 
         viewModel.currentNote.observe(viewLifecycleOwner, {
-            binding.editor.setText(it.text)
+            val savedString = savedInstanceState?.getString(NOTE_TEXT_KEY)
+            val savedCursorPosition = savedInstanceState?.getInt(CURSOR_POSITION_KEY) ?: 0
+            binding.editor.setText(savedString ?: it.text)
+            binding.editor.setSelection(savedCursorPosition)
         })
         viewModel.getNoteById(args.noteId)
 
@@ -82,5 +85,13 @@ class EditorFragment : Fragment() {
     private fun saveAndReturn(): Boolean {
         findNavController().navigateUp()
         return true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        with(binding.editor) {
+            outState.putString(NOTE_TEXT_KEY, text.toString())
+            outState.putInt(CURSOR_POSITION_KEY, selectionStart)
+        }
+        super.onSaveInstanceState(outState)
     }
 }
