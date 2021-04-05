@@ -32,8 +32,10 @@ class EditorFragment : Fragment() {
         }
         setHasOptionsMenu(true)
 
+        viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
+
         binding = EditorFragmentBinding.inflate(inflater, container, false)
-        binding.editor.setText("You selected note number ${args.noteId}")
+        binding.editor.setText("")
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -43,6 +45,11 @@ class EditorFragment : Fragment() {
                 }
             }
         )
+
+        viewModel.currentNote.observe(viewLifecycleOwner, {
+            binding.editor.setText(it.text)
+        })
+        viewModel.getNoteById(args.noteId)
 
         return binding.root
     }
@@ -57,10 +64,5 @@ class EditorFragment : Fragment() {
     private fun saveAndReturn(): Boolean {
         findNavController().navigateUp()
         return true
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
     }
 }
