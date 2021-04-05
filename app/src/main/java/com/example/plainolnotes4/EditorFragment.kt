@@ -1,10 +1,12 @@
 package com.example.plainolnotes4
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -32,8 +34,17 @@ class EditorFragment : Fragment() {
         }
         setHasOptionsMenu(true)
 
+        requireActivity().title =
+            if (args.noteId == NEW_NOTE_ID) {
+                getString(R.string.new_note)
+            } else {
+                getString(R.string.edit_note)
+            }
+
+        viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
+
         binding = EditorFragmentBinding.inflate(inflater, container, false)
-        binding.editor.setText("You selected note number ${args.noteId}")
+        binding.editor.setText("")
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -44,10 +55,27 @@ class EditorFragment : Fragment() {
             }
         )
 
+        viewModel.currentNote.observe(viewLifecycleOwner, {
+            val savedString = savedInstanceState?.getString(NOTE_TEXT_KEY)
+            val savedCursorPosition = savedInstanceState?.getInt(CURSOR_POSITION_KEY) ?: 0
+            binding.editor.setText(savedString ?: it.text)
+            binding.editor.setSelection(savedCursorPosition)
+        })
+        viewModel.getNoteById(args.noteId)
+
         return binding.root
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val imm = requireActivity().getSystemService(
+            Activity.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.editor.windowToken, 0)
+
+        viewModel.currentNote.value?.text = binding.editor.text.toString()
+        viewModel.updateNote()
+
         return when (item.itemId) {
             android.R.id.home -> saveAndReturn()
             else -> super.onOptionsItemSelected(item)
@@ -59,8 +87,11 @@ class EditorFragment : Fragment() {
         return true
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
+    override fun onSaveInstanceState(outState: Bundle) {
+        with(binding.editor) {
+            outState.putString(NOTE_TEXT_KEY, text.toString())
+            outState.putInt(CURSOR_POSITION_KEY, selectionStart)
+        }
+        super.onSaveInstanceState(outState)
     }
 }
